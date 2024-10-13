@@ -11,7 +11,7 @@ import { Ping } from "./commands/pong";
 // Cli devra également posséde un injecteur de dépendance.Chaque dépendance pourra être via un décorateur
 // @Service injecté dans les paramétre de la fonction run()
 // Cela pourrait être également utile d'utiliser le concepte de middleware pour partager des comportement
-// communs entre les différentes commandes. 
+// communs entre les différentes commandes.
 
 const cli = CLI.Create();
 
@@ -19,11 +19,12 @@ cli.configure((builder) => {
   builder.options = {
     scriptName: "scriptName",
   };
-  builder.help.options = {
+
+  builder.configureHelp({
     description: "une sacré description de la mort qui tue",
     name: "help",
     alias: "e",
-  };
+  });
 });
 
 cli.register(Ping, Pong);
