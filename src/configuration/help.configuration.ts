@@ -1,4 +1,4 @@
-import { CallbackConfigure, IConfigurationBuilder } from "./configuration";
+import { CallbackConfigure, IConfiguration } from "./configuration";
 
 export type HelpOption = {
   name: string;
@@ -26,10 +26,7 @@ export class HelpConfiguration {
     }
   };
 
-  constructor(
-    configuration: IConfigurationBuilder,
-    public options?: HelpOption
-  ) {
+  constructor(configuration: IConfiguration, public options?: HelpOption) {
     configuration.configures.push(this.configure);
   }
 }

@@ -7,7 +7,7 @@ import {
   Configuration,
   CallbackConfiguration,
   CallbackConfigure,
-  IConfigurationBuilder,
+  IConfiguration,
 } from "./configuration/configuration";
 
 interface ICli {
@@ -17,7 +17,7 @@ interface ICli {
   configure(callback: CallbackConfiguration): ICli;
 }
 
-export class CLI implements ICli, IConfigurationBuilder {
+export class CLI implements ICli, IConfiguration {
   private readonly yargsInstance = yargs(hideBin(process.argv));
   private readonly commandManager: CommandManager | undefined;
   public readonly configures: CallbackConfigure[] = [];
