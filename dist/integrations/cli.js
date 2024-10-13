@@ -10,7 +10,11 @@ cli.configure(function (builder) {
     builder.options = {
         scriptName: "scriptName",
     };
-    builder.help;
+    builder.help.options = {
+        description: "une sacré description de la mort qui tue",
+        name: "help",
+        alias: "e",
+    };
 });
 cli.register(pong_1.Ping, ping_1.Pong);
 cli.run();

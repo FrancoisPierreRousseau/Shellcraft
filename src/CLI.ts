@@ -8,7 +8,7 @@ import {
   CallbackConfiguration,
   CallbackConfigure,
   IConfigurationBuilder,
-} from "./configuration/global.configuration";
+} from "./configuration/configuration";
 
 interface ICli {
   run(): void;
@@ -56,6 +56,11 @@ export class CLI implements ICli, IConfigurationBuilder {
           type: "string",
           default: "Cambi",
           describe: "the name to say hello to",
+        });
+        yargs.option("bool", {
+          type: "boolean",
+          default: false,
+          describe: "une valeur booleann",
         });
       },
       function (argv) {

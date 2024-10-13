@@ -1,16 +1,12 @@
 import yargs from "yargs";
-import {
-  HelpConfiguration,
-  HelpOption,
-  IHelpConfiguration,
-} from "./help.configuration";
+import { HelpConfiguration, IHelpConfiguration } from "./help.configuration";
 
 export type GlobalOption = {
   scriptName?: string;
 };
 
 export interface IConfiguration {
-  help(options: HelpOption): IHelpConfiguration;
+  help: IHelpConfiguration;
   options?: GlobalOption;
 }
 
@@ -26,7 +22,7 @@ export type CallbackConfiguration = (
 
 export class Configuration implements IConfiguration {
   public options?: GlobalOption;
-  public helpCongiguration: HelpConfiguration = new HelpConfiguration({});
+  public help = new HelpConfiguration(this.configuration);
 
   private configure: CallbackConfigure = (yargsInstance) => {
     if (this.options?.scriptName) {
@@ -34,11 +30,7 @@ export class Configuration implements IConfiguration {
     }
   };
 
-  constructor(configurationBuilder: IConfigurationBuilder) {
-    configurationBuilder.configures.push(this.configure);
-  }
-
-  help(options: HelpOption): IHelpConfiguration {
-    return new HelpConfiguration(options).configure;
+  constructor(private configuration: IConfigurationBuilder) {
+    configuration.configures.push(this.configure);
   }
 }
