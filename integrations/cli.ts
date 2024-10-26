@@ -1,4 +1,5 @@
 import { CLI } from "../src/CLI";
+import { CliBuilder } from "../src/CLI.builder";
 import { Pong } from "./commands/ping";
 import { Ping } from "./commands/pong";
 
@@ -23,13 +24,17 @@ import { Ping } from "./commands/pong";
 // pour gérer les middlewares/ interceptors, il serra important de créer un package utilisant
 // yargs pour gérer le flux de communication
 
-const cli = CLI.Create();
+const cliBuilder = CliBuilder.createCliBuilder();
+
+const cli = cliBuilder.build();
 
 cli.configure((builder) => {
   builder.options = {
     scriptName: "scriptName",
   };
 
+  // Cela serrait mieux si c'est un callback finalement
+  // a revoir
   builder.configureHelp({
     description: "une sacré description de la mort qui tue",
     name: "help",
@@ -37,7 +42,7 @@ cli.configure((builder) => {
   });
 });
 
-cli.register(Ping, Pong);
+// cli.register(Ping, Pong);
 
 cli.run();
 
@@ -50,8 +55,10 @@ cli.use(router)
 // Cela permettrait de centraliser un systéme d'authentification car commandeIinfo permet 
 // d'exécuterune logique avant toute les commande
 
-// Ou je rajouter un addAuthentification fexible comme dans mon framework
 
+
+// Ou je rajouter un addAuthentification fexible comme dans mon framework
+// Une commande pourrais correspondre à une ressource 
 cli.beforeRunCommand((@CommandInfo() commandInfo, @Service(name) service) => {
     
 })
@@ -63,8 +70,8 @@ cli.register(builder => {
 
 // Je me demande si il ne serrait pas préférable d'utiliser une classe
   // next et interaction passé dans le constructeur et run j'aurait option.... 
-  fn = (next, interaction, @option() name: string, @option() id: int, @service("serviceName") service) => {
-
+  fn = (next, interaction, @service("serviceName") service) => {
+      interaction.option
   }
 
   builder
@@ -74,6 +81,7 @@ cli.register(builder => {
 
   const mapCommands = builder.mapCommands()
     .whithInterceptors(fn, fn)
+    .whitMetadata(....)
 
   mapCommands
     .addCommand(Pong)

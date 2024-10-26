@@ -1,4 +1,4 @@
-import yargs from "yargs";
+import yargs, { CommandBuilder } from "yargs";
 import { hideBin } from "yargs/helpers";
 import "reflect-metadata";
 import { NewCommand } from "./type";
@@ -9,27 +9,22 @@ import {
   CallbackConfigure,
   IConfiguration,
 } from "./configuration/configuration";
+import { IServiceCollection } from "./services/service.collection";
+import { ICommandMapBuilder } from "./commands/command.map.builder";
 
-interface ICli {
+export interface ICli {
   run(): void;
-  register(...commandsClasses: NewCommand[]): void;
-  build(): void;
   configure(callback: CallbackConfiguration): ICli;
+  addCommand(): ICli;
 }
 
-export class CLI implements ICli, IConfiguration {
+// Utiliser un command builder
+export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
   private readonly yargsInstance = yargs(hideBin(process.argv));
-  private readonly commandManager: CommandManager | undefined;
   public readonly configures: CallbackConfigure[] = [];
+  public readonly commandBuilders: CommandBuilder[] = [];
 
-  private constructor() {
-    // console.log(Object.keys(this.options?.help ?? {}));
-    // console.log(ddd.arguments);
-  }
-
-  static Create(): ICli {
-    return new CLI();
-  }
+  constructor(public readonly services: IServiceCollection) {}
 
   configure(callback: CallbackConfiguration): ICli {
     const configuration = new Configuration(this);
@@ -39,8 +34,8 @@ export class CLI implements ICli, IConfiguration {
     return this;
   }
 
-  register(...commandsClasses: NewCommand[]) {
-    const commandManager = new CommandManager(commandsClasses);
+  addCommand() {
+    return this;
   }
 
   run() {
@@ -57,6 +52,7 @@ export class CLI implements ICli, IConfiguration {
           default: "Cambi",
           describe: "the name to say hello to",
         });
+
         yargs.option("bool", {
           type: "boolean",
           default: false,
@@ -70,6 +66,4 @@ export class CLI implements ICli, IConfiguration {
 
     this.yargsInstance.parse();
   }
-
-  build(): void {}
 }
