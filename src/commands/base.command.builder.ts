@@ -1,4 +1,4 @@
-import yargs from "yargs";
+import yargs, { MiddlewareFunction } from "yargs";
 import { InterceptorHandler } from "./interceptors/interceptor.handler";
 
 export interface ICommandBuilder {
@@ -6,7 +6,7 @@ export interface ICommandBuilder {
 }
 
 export abstract class BaseCommandBuilder implements ICommandBuilder {
-  public readonly interceptors: InterceptorHandler[] = [];
+  public readonly interceptors: MiddlewareFunction[] = [];
 
   withInterceptors(...interceptors: InterceptorHandler[]): this {
     this.interceptors.push(...interceptors);

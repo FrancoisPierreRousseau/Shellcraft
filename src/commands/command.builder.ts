@@ -1,4 +1,4 @@
-import { Argv } from "yargs";
+import { Argv, MiddlewareFunction } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
 import { CommandDecorator } from "./decorators/commande.decorator";
@@ -31,15 +31,11 @@ export class CommandBuilder
       describe: "TEST AVEC PING",
       builder: (yargs) => {
         this.subCommands.forEach((subCommand) => {
-          subCommand.interceptors.unshift(...this.interceptors);
           subCommand.build(yargs);
         });
-        return yargs;
+        return yargs.middleware(this.interceptors);
       },
       handler: () => {
-        this.interceptors.forEach((interceptor) => {
-          interceptor();
-        });
         const command = new this.command();
         command.run();
       },
