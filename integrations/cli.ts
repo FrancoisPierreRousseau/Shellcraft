@@ -1,4 +1,3 @@
-import { CLI } from "../src/CLI";
 import { CliBuilder } from "../src/CLI.builder";
 import { Pong } from "./commands/ping";
 import { Ping } from "./commands/pong";
