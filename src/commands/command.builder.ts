@@ -2,10 +2,9 @@ import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
 import { CommandDecorator } from "./decorators/commande.decorator";
-import { ISubCommandBuilder } from "./sub.command.builder";
 
 export interface ISingleBuildCommand extends ICommandBuilder {
-  mapSubCommand(command: NewCommand): ISubCommandBuilder;
+  mapSubCommand(command: NewCommand): ISingleBuildCommand;
 }
 
 export class CommandBuilder
@@ -14,18 +13,29 @@ export class CommandBuilder
 {
   private readonly commandDecorator: CommandDecorator;
 
+  private readonly subCommands: CommandBuilder[] = [];
+
   constructor(private readonly command: NewCommand) {
     super();
     this.commandDecorator = new CommandDecorator(command);
   }
-  mapSubCommand(command: NewCommand): ISubCommandBuilder {
-    throw new Error("Method not implemented.");
+  mapSubCommand(command: NewCommand): ISingleBuildCommand {
+    const subCommand = new CommandBuilder(command);
+    this.subCommands.push(subCommand);
+    return subCommand;
   }
 
   build(yargsInstance: Argv<{}>): void {
     yargsInstance.command({
       command: this.command.name,
       describe: "TEST AVEC PING",
+      builder: (yargs) => {
+        this.subCommands.forEach((subCommand) => {
+          subCommand.interceptors.unshift(...this.interceptors);
+          subCommand.build(yargs);
+        });
+        return yargs;
+      },
       handler: () => {
         this.interceptors.forEach((interceptor) => {
           interceptor();

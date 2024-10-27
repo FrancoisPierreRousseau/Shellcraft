@@ -52,7 +52,11 @@ cli.register((builder) => {
     }
   );
 
-  firstGrouped.map(Ping);
+  const pingCommand = firstGrouped.map(Ping);
+
+  const subCommandJaja = pingCommand.mapSubCommand(Jaja);
+
+  subCommandJaja.mapSubCommand(Pong);
 
   const secondGrouped = builder.mapGrouped();
 
@@ -64,8 +68,6 @@ cli.register((builder) => {
       console.log("secondGrouped2");
     }
   );
-
-  secondGrouped.map(Jaja);
 
   const threesGrouped = secondGrouped.mapGrouped();
 
