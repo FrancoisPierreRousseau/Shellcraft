@@ -60,7 +60,6 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
     for (const callbackEndpointBuilder of callbackCommandBuilders) {
       callbackEndpointBuilder(this);
     }
-
     return this;
   }
 
@@ -69,26 +68,9 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
       configure(this.yargsInstance);
     }
 
-    this.yargsInstance.usage("$0 <cmd> [args]").command(
-      "hello [name]",
-      "welcome ter yargs!",
-      (yargs) => {
-        yargs.positional("name", {
-          type: "string",
-          default: "Cambi",
-          describe: "the name to say hello to",
-        });
-
-        yargs.option("bool", {
-          type: "boolean",
-          default: false,
-          describe: "une valeur booleann",
-        });
-      },
-      function (argv) {
-        console.log("hello", argv.name, "welcome to yargs!");
-      }
-    );
+    for (const commandBuilder of this.commandBuilders) {
+      commandBuilder.build(this.yargsInstance);
+    }
 
     this.yargsInstance.parse();
   }

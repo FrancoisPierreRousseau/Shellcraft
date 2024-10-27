@@ -1,4 +1,5 @@
 import { CliBuilder } from "../src/CLI.builder";
+import { Jaja } from "./commands/jaja";
 import { Pong } from "./commands/ping";
 import { Ping } from "./commands/pong";
 
@@ -40,11 +41,44 @@ cli.configure((builder) => {
 });
 
 cli.register((builder) => {
-  const commandBuilder = builder.map(Ping);
-  const commandGroupedBuilder = builder
-    .mapGrouped()
-    .withInterceptor((eee) => {})
-    .map(Pong);
+  const firstGrouped = builder.mapGrouped();
+
+  firstGrouped.withInterceptors(
+    () => {
+      console.log("firstGrouped1");
+    },
+    () => {
+      console.log("firstGrouped2");
+    }
+  );
+
+  firstGrouped.map(Ping);
+
+  const secondGrouped = builder.mapGrouped();
+
+  secondGrouped.withInterceptors(
+    () => {
+      console.log("secondGrouped1");
+    },
+    () => {
+      console.log("secondGrouped2");
+    }
+  );
+
+  secondGrouped.map(Jaja);
+
+  const threesGrouped = secondGrouped.mapGrouped();
+
+  threesGrouped.withInterceptors(
+    () => {
+      console.log("threeGrouped1");
+    },
+    () => {
+      console.log("threeGrouped2");
+    }
+  );
+
+  threesGrouped.map(Pong);
 
   return builder;
 });
@@ -64,6 +98,7 @@ cli.use(router)
 
 // Ou je rajouter un addAuthentification fexible comme dans mon framework
 // Une commande pourrais correspondre à une ressource 
+// Command infor correspond à yargs.argv...
 cli.beforeRunCommand((@CommandInfo() commandInfo, @Service(name) service) => {
     
 })

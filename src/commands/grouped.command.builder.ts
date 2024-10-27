@@ -1,12 +1,16 @@
+import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
-import { CommandBuilder } from "./command.builder";
+import { CommandBuilder, ISingleBuildCommand } from "./command.builder";
 import { ICommandMapBuilder } from "./command.map.builder";
 import { InterceptorHandler } from "./interceptors/interceptor.handler";
 
-export interface IGroupedCommandBuilder extends ICommandBuilder {
-  withInterceptor(interceptor: InterceptorHandler): IGroupedCommandBuilder;
-  map(command: NewCommand): ICommandBuilder;
+export interface IGroupedCommandBuilder {
+  withInterceptors(
+    ...interceptors: InterceptorHandler[]
+  ): IGroupedCommandBuilder;
+  map(command: NewCommand): ISingleBuildCommand;
+  mapGrouped(): IGroupedCommandBuilder;
 }
 
 export class GroupedCommandBuilder
@@ -15,22 +19,27 @@ export class GroupedCommandBuilder
 {
   public readonly commandBuilders: BaseCommandBuilder[] = [];
 
-  constructor(private readonly commandMapBuilder: ICommandMapBuilder) {
+  constructor(commandMapBuilder: ICommandMapBuilder) {
     super();
-  }
-
-  withInterceptor(interceptor: InterceptorHandler): IGroupedCommandBuilder {
-    return this;
   }
 
   mapGrouped(): IGroupedCommandBuilder {
     const groupedCommandBuilder = new GroupedCommandBuilder(this);
-    this.commandBuilders.push(this);
+    this.commandBuilders.push(groupedCommandBuilder);
     return groupedCommandBuilder;
   }
-  map(command: NewCommand): ICommandBuilder {
+
+  map(command: NewCommand): ISingleBuildCommand {
     const commandBuilder = new CommandBuilder(command);
     this.commandBuilders.push(commandBuilder);
     return commandBuilder;
+  }
+
+  build(yargsInstance: Argv<{}>): void {
+    this.commandBuilders.forEach((commandBuilder) => {
+      commandBuilder.interceptors.unshift(...this.interceptors);
+
+      commandBuilder.build(yargsInstance);
+    });
   }
 }
