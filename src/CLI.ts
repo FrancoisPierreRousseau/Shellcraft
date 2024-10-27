@@ -23,6 +23,10 @@ import {
   ICommandBuilder,
 } from "./commands/base.command.builder";
 
+export interface MiddlewareArguments extends yargs.Arguments {
+  services?: IServiceCollection;
+}
+
 export interface ICli {
   run(): void;
   configure(callback: CallbackConfiguration): ICli;
@@ -37,7 +41,7 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
   constructor(public readonly services: IServiceCollection) {}
 
   mapGrouped(): IGroupedCommandBuilder {
-    const groupedCommandBuilder = new GroupedCommandBuilder(this);
+    const groupedCommandBuilder = new GroupedCommandBuilder();
     this.commandBuilders.push(groupedCommandBuilder);
     return groupedCommandBuilder;
   }
@@ -68,10 +72,14 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
       configure(this.yargsInstance);
     }
 
+    this.yargsInstance.middleware((argv: MiddlewareArguments) => {
+      argv.services = this.services;
+    });
+
     for (const commandBuilder of this.commandBuilders) {
       commandBuilder.build(this.yargsInstance);
     }
 
-    this.yargsInstance.parse();
+    this.yargsInstance.parseSync();
   }
 }

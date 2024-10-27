@@ -19,12 +19,12 @@ export class GroupedCommandBuilder
 {
   public readonly commandBuilders: BaseCommandBuilder[] = [];
 
-  constructor(commandMapBuilder: ICommandMapBuilder) {
+  constructor() {
     super();
   }
 
   mapGrouped(): IGroupedCommandBuilder {
-    const groupedCommandBuilder = new GroupedCommandBuilder(this);
+    const groupedCommandBuilder = new GroupedCommandBuilder();
     this.commandBuilders.push(groupedCommandBuilder);
     return groupedCommandBuilder;
   }

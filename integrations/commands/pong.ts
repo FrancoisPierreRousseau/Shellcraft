@@ -1,11 +1,11 @@
+import { Service } from "../../src/commands/arguments/argument.service.decorator";
 import { ICommand } from "../../src/commands/command";
-import { Command } from "../../src/commands/decorators/commande.decorator";
+import { TestService } from "../services/test.service";
 
-@Command()
 export class Ping implements ICommand {
   private name: string = "Ping";
 
-  run() {
-    console.log(this.name);
+  run(@Service(TestService) service: TestService) {
+    service.test();
   }
 }

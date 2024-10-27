@@ -1,7 +1,9 @@
-import { Argv, MiddlewareFunction } from "yargs";
+import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
-import { CommandDecorator } from "./decorators/commande.decorator";
+import { ArgumentServiceDecorator } from "./arguments/argument.service.decorator";
+import { IServiceCollection } from "../services/service.collection";
+import { MiddlewareArguments } from "../CLI";
 
 export interface ISingleBuildCommand extends ICommandBuilder {
   mapSubCommand(command: NewCommand): ISingleBuildCommand;
@@ -11,14 +13,12 @@ export class CommandBuilder
   extends BaseCommandBuilder
   implements ISingleBuildCommand
 {
-  private readonly commandDecorator: CommandDecorator;
-
   private readonly subCommands: CommandBuilder[] = [];
 
   constructor(private readonly command: NewCommand) {
     super();
-    this.commandDecorator = new CommandDecorator(command);
   }
+
   mapSubCommand(command: NewCommand): ISingleBuildCommand {
     const subCommand = new CommandBuilder(command);
     this.subCommands.push(subCommand);
@@ -31,13 +31,23 @@ export class CommandBuilder
       describe: "TEST AVEC PING",
       builder: (yargs) => {
         this.subCommands.forEach((subCommand) => {
+          console.log(subCommand.command.name);
           subCommand.build(yargs);
         });
         return yargs.middleware(this.interceptors);
       },
-      handler: () => {
+      handler: (argv: MiddlewareArguments) => {
         const command = new this.command();
-        command.run();
+        const argumentServiceDecorator = new ArgumentServiceDecorator(
+          command,
+          "run" // Pas à le mettre ici mais de le decorator et throw si la prop n'est pas présente
+        );
+
+        const service = argv.services!.get(
+          argumentServiceDecorator.matadata[0].identifier
+        );
+
+        command.run.apply(command, [service]);
       },
     });
   }
