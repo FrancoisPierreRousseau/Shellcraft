@@ -1,8 +1,6 @@
-import yargs, { CommandBuilder } from "yargs";
+import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import "reflect-metadata";
-import { NewCommand } from "./type";
-import { CommandManager } from "./commands/command.manager";
 import {
   Configuration,
   CallbackConfiguration,
@@ -10,21 +8,45 @@ import {
   IConfiguration,
 } from "./configuration/configuration";
 import { IServiceCollection } from "./services/service.collection";
-import { ICommandMapBuilder } from "./commands/command.map.builder";
+import {
+  CallbackCommandMapBuilder,
+  ICommandMapBuilder,
+} from "./commands/command.map.builder";
+import { CommandBuilder } from "./commands/command.builder";
+import { NewCommand } from "./type";
+import {
+  GroupedCommandBuilder,
+  IGroupedCommandBuilder,
+} from "./commands/grouped.command.builder";
+import {
+  BaseCommandBuilder,
+  ICommandBuilder,
+} from "./commands/base.command.builder";
 
 export interface ICli {
   run(): void;
   configure(callback: CallbackConfiguration): ICli;
-  addCommand(): ICli;
+  register(...callbackCommandBuilders: CallbackCommandMapBuilder[]): ICli;
 }
 
-// Utiliser un command builder
 export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
   private readonly yargsInstance = yargs(hideBin(process.argv));
   public readonly configures: CallbackConfigure[] = [];
-  public readonly commandBuilders: CommandBuilder[] = [];
+  public readonly commandBuilders: BaseCommandBuilder[] = [];
 
   constructor(public readonly services: IServiceCollection) {}
+
+  mapGrouped(): IGroupedCommandBuilder {
+    const groupedCommandBuilder = new GroupedCommandBuilder(this);
+    this.commandBuilders.push(groupedCommandBuilder);
+    return groupedCommandBuilder;
+  }
+
+  map(command: NewCommand): ICommandBuilder {
+    const commandBuilder = new CommandBuilder(command);
+    this.commandBuilders.push(commandBuilder);
+    return commandBuilder;
+  }
 
   configure(callback: CallbackConfiguration): ICli {
     const configuration = new Configuration(this);
@@ -34,7 +56,11 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
     return this;
   }
 
-  addCommand() {
+  register(...callbackCommandBuilders: CallbackCommandMapBuilder[]): ICli {
+    for (const callbackEndpointBuilder of callbackCommandBuilders) {
+      callbackEndpointBuilder(this);
+    }
+
     return this;
   }
 

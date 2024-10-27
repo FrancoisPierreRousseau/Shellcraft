@@ -4,7 +4,6 @@ import {
   IServiceCollection,
 } from "./services/service.collection";
 import { CLI, ICli } from "./CLI";
-import { ICommandMapBuilder } from "./commands/command.map.builder";
 
 interface ICliBuilder {
   configure(
