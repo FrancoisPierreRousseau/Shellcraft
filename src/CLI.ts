@@ -22,13 +22,10 @@ import {
   BaseCommandBuilder,
   ICommandBuilder,
 } from "./commands/base.command.builder";
-
-export interface MiddlewareArguments extends yargs.Arguments {
-  services?: IServiceCollection;
-}
+import { Arguments } from "./arguments";
 
 export interface ICli {
-  run(): void;
+  run(): Promise<void>;
   configure(callback: CallbackConfiguration): ICli;
   register(...callbackCommandBuilders: CallbackCommandMapBuilder[]): ICli;
 }
@@ -67,12 +64,12 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
     return this;
   }
 
-  run() {
+  async run() {
     for (const configure of this.configures) {
       configure(this.yargsInstance);
     }
 
-    this.yargsInstance.middleware((argv: MiddlewareArguments) => {
+    this.yargsInstance.middleware((argv: Arguments) => {
       argv.services = this.services;
     });
 

@@ -2,8 +2,7 @@ import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
 import { ArgumentServiceDecorator } from "./arguments/argument.service.decorator";
-import { IServiceCollection } from "../services/service.collection";
-import { MiddlewareArguments } from "../CLI";
+import { Arguments } from "../arguments";
 
 export interface ISingleBuildCommand extends ICommandBuilder {
   mapSubCommand(command: NewCommand): ISingleBuildCommand;
@@ -20,6 +19,8 @@ export class CommandBuilder
   }
 
   mapSubCommand(command: NewCommand): ISingleBuildCommand {
+    // Créer un CommandHandlerBuilder
+    // Créer un ArgumentsBuilder
     const subCommand = new CommandBuilder(command);
     this.subCommands.push(subCommand);
     return subCommand;
@@ -36,7 +37,7 @@ export class CommandBuilder
         });
         return yargs.middleware(this.interceptors);
       },
-      handler: (argv: MiddlewareArguments) => {
+      handler: (argv: Arguments) => {
         const command = new this.command();
         const argumentServiceDecorator = new ArgumentServiceDecorator(
           command,

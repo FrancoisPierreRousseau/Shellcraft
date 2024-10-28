@@ -102,7 +102,9 @@ cli.register((builder) => {
   return builder;
 });
 
-cli.run();
+(async () => {
+  await cli.run();
+})();
 
 /*
 
