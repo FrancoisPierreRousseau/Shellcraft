@@ -3,6 +3,8 @@ import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
 import { ArgumentServiceDecorator } from "./arguments/argument.service.decorator";
 import { Arguments } from "../arguments";
+import { ArgumentServiceBuilder } from "./arguments/argument.service.builder";
+import { ICommand } from "./command";
 
 export interface ISingleBuildCommand extends ICommandBuilder {
   mapSubCommand(command: NewCommand): ISingleBuildCommand;
@@ -14,13 +16,23 @@ export class CommandBuilder
 {
   private readonly subCommands: CommandBuilder[] = [];
 
-  constructor(private readonly command: NewCommand) {
+  private readonly argumentServiceBuilder: ArgumentServiceBuilder;
+
+  private readonly command: ICommand;
+
+  constructor(private readonly newCommand: NewCommand) {
     super();
+    this.command = new newCommand();
+    this.argumentServiceBuilder = new ArgumentServiceBuilder(
+      new ArgumentServiceDecorator(this.command, "run")
+    );
   }
 
   mapSubCommand(command: NewCommand): ISingleBuildCommand {
     // Créer un CommandHandlerBuilder
+    // Créer un ArgumentServiceBuilder
     // Créer un ArgumentsBuilder
+    // Créer un handlerBuilder
     const subCommand = new CommandBuilder(command);
     this.subCommands.push(subCommand);
     return subCommand;
@@ -28,27 +40,19 @@ export class CommandBuilder
 
   build(yargsInstance: Argv<{}>): void {
     yargsInstance.command({
-      command: this.command.name,
+      command: this.newCommand.name,
       describe: "TEST AVEC PING",
       builder: (yargs) => {
         this.subCommands.forEach((subCommand) => {
-          console.log(subCommand.command.name);
           subCommand.build(yargs);
         });
         return yargs.middleware(this.interceptors);
       },
       handler: (argv: Arguments) => {
-        const command = new this.command();
-        const argumentServiceDecorator = new ArgumentServiceDecorator(
-          command,
-          "run" // Pas à le mettre ici mais de le decorator et throw si la prop n'est pas présente
+        this.command.run.apply(
+          this.command,
+          this.argumentServiceBuilder.build(argv.services!)
         );
-
-        const service = argv.services!.get(
-          argumentServiceDecorator.matadata[0].identifier
-        );
-
-        command.run.apply(command, [service]);
       },
     });
   }

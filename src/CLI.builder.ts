@@ -19,6 +19,7 @@ export class CliBuilder implements ICliBuilder {
 
   private constructor() {}
 
+  // Pourrait être asynchrone avec des callback asynchone
   configure(
     ...configureServiceCallbacks: ConfigureServiceCallback[]
   ): ICliBuilder {

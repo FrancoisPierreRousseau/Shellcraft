@@ -9,7 +9,7 @@ import { configureTest, TestService } from "./services/test.service";
 
 /*
  Dans le cadre d'un IAM réfléchir à un scénario de si je suis sur tel machine 
- alors j'ai accés à x command. Ou si je suis sur tel session de la machine X alors 
+ alors j'ai accés à x command. Ou si je suis sur tel utilisateur  de la machine alors 
  j'ai accés à tel command. 
 */
 

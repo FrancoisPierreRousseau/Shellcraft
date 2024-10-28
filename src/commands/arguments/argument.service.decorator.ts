@@ -1,17 +1,18 @@
 import { ICommand } from "../command";
 
 export class ArgumentServiceDecorator {
-  public matadata: any;
+  public readonly matadata: Record<number, any>;
 
   constructor(
     private readonly command: ICommand,
-    private readonly methodName: string | symbol
+    public readonly methdodName: "run"
   ) {
-    this.matadata = Reflect.getMetadata("services", command, methodName) ?? {};
+    this.matadata =
+      Reflect.getMetadata("services", command, this.methdodName) ?? {};
   }
 
   add(identifier: any, index: number) {
-    this.matadata[index] = { identifier };
+    this.matadata[index] = identifier;
   }
 
   update() {
@@ -19,13 +20,13 @@ export class ArgumentServiceDecorator {
       "services",
       this.matadata,
       this.command,
-      this.methodName
+      this.methdodName
     );
   }
 }
 
 export function Service(identifier: any) {
-  return (command: ICommand, methodName: string | symbol, index: number) => {
+  return (command: ICommand, methodName: "run", index: number) => {
     const argumentServiceDecorator = new ArgumentServiceDecorator(
       command,
       methodName
