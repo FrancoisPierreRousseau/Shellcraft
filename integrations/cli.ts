@@ -13,17 +13,24 @@ import { configureTest, TestService } from "./services/test.service";
  j'ai accés à tel command. 
 */
 
+/*
+  Dans le cadre d'une co à une interface, je dois avoir accés à la fois à la machine 
+  et au compte
+*/
+
 // Rajouter un systéme de typage plus poussé (décimal, integer....)
 
 // A penser, avoir la possibilité d'utiliser showHelp dans les commandes
 // Cela permet de couper l'exécution du programme et forcer l'affichage d'help
 
-// Cli devra également posséde un injecteur de dépendance.Chaque dépendance pourra être via un décorateur
-// @Service injecté dans les paramétre de la fonction run()
+// Au niveeau des middlewares pensaient à prendre en compte "false" ou "true"
+// pour couper l'héritage au niveau de l'exécution
 
 // Penser à un systéme d'authenfication à l'aide d'auth0 centralisant les droits auquel
 // à le droit d'accéder un utilisateur. Cela activera les commandes, arguments... auquel à le
 // droit d'utiliser un utilisateur.
+
+// Créer un interceptorHandlerBuilder et un commandHandlerBuilder
 
 // rajouter un .descriptor pour les commandes
 

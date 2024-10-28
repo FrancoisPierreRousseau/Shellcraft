@@ -30,7 +30,6 @@ export class CommandBuilder
 
   mapSubCommand(command: NewCommand): ISingleBuildCommand {
     // Créer un CommandHandlerBuilder
-    // Créer un ArgumentServiceBuilder
     // Créer un ArgumentsBuilder
     // Créer un handlerBuilder
     const subCommand = new CommandBuilder(command);
