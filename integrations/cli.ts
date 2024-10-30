@@ -11,6 +11,10 @@ import { configureTest, TestService } from "./services/test.service";
  Dans le cadre d'un IAM réfléchir à un scénario de si je suis sur tel machine 
  alors j'ai accés à x command. Ou si je suis sur tel utilisateur  de la machine alors 
  j'ai accés à tel command. 
+
+ Créer un systéme de validiation au niveau des arguments (voir patterne strategy).
+ Pour chaque type, associer une classe qui aura pour chaque stratgy le rôle de valider
+ plus tard les entré d'un utilisateur. J'abstrairé en utilisant une interface. 
 */
 
 /*
@@ -33,6 +37,8 @@ import { configureTest, TestService } from "./services/test.service";
 // Créer un interceptorHandlerBuilder et un commandHandlerBuilder
 
 // rajouter un .descriptor pour les commandes
+
+// Trouver un moyen pour que services des args ne soit pas considéré comme undefined
 
 const cliBuilder = CliBuilder.createCliBuilder();
 
