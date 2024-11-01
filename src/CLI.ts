@@ -22,7 +22,7 @@ import {
   BaseCommandBuilder,
   ICommandBuilder,
 } from "./commands/base.command.builder";
-import { Arguments } from "./arguments";
+import { Arguments } from "./commands/arguments/arguments";
 
 export interface ICli {
   run(): Promise<void>;

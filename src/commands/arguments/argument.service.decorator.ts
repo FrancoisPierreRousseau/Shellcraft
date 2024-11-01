@@ -1,100 +1,52 @@
 import yargs from "yargs";
 import { New } from "../../type";
 import { ICommand } from "../command";
-import { IServiceCollection } from "../../services/service.collection";
+import { ArgumentMetadataService } from "./argument.metadata.service";
 
-type ArgumentValidator = (args: yargs.Argv) => boolean;
+export type ArgumentValidator = (args: yargs.Argv) => Error | null;
 
-type ArgumentType = InstanceType<New<any>> | string | number;
+export type ArgumentMetadata = New<{}> | string | number;
 
-interface IArgumentBuilder {
-  build(): ArgumentType[];
-  validate(): boolean;
-}
-
-interface IArgumentMetadata {
-  data: ArgumentType;
+export interface IArgumentMetadata {
+  data: ArgumentMetadata;
   validators: ArgumentValidator[];
   index: number;
 }
 
-class ArgumentMetadataService implements IArgumentMetadata {
-  constructor(
-    public readonly data: InstanceType<New<any>> | string,
-    public readonly validators: ArgumentValidator[] = [],
-    public readonly index: number
-  ) {}
-}
+export class ArgumentDecorator {
+  public readonly argumentMetadatas: IArgumentMetadata[];
 
-class ArgumentServiceBuilder implements IArgumentBuilder {
-  constructor(
-    private readonly argumentMetada: ArgumentMetadataService,
-    private readonly services: IServiceCollection
-  ) {}
-
-  build(): ArgumentType[] {
-    throw new Error("Method not implemented.");
-  }
-  validate(): boolean {
-    return this.services.isBound(this.argumentMetada.data);
-  }
-}
-
-class ArgumentBuilderFactory {
-  private static readonly argumentBuilders: IArgumentBuilder[] = [];
-
-  public static createArgumentBuilder(
-    argv: yargs.Arguments,
-    services: IServiceCollection,
-    cliArguments: IArgumentMetadata[]
-  ): any {
-    for (const argument of cliArguments) {
-      if (argument instanceof ArgumentMetadataService) {
-        this.argumentBuilders.push(
-          new ArgumentServiceBuilder(argument, services)
-        );
-      }
-    }
-  }
-}
-
-// IArgumentBuilder { build(argv), validate(  ) }
-// ArgumentBuilder
-// ArgumentBuilderService { data, index } -> IArgumentBuilder
-// ArgumentBuilderOption { data, index } -> IArgumentBuilder
-
-export class ArgumentServiceDecorator {
-  public readonly matadata: Record<number, any>;
+  private readonly metadataKey = "argumentMetadatas";
 
   constructor(
     private readonly command: ICommand,
     public readonly methdodName: "run"
   ) {
-    this.matadata =
-      Reflect.getMetadata("services", command, this.methdodName) ?? {};
+    this.argumentMetadatas =
+      Reflect.getMetadata(this.metadataKey, command, this.methdodName) ?? [];
   }
 
-  add(identifier: any, index: number) {
-    this.matadata[index] = identifier;
+  add(argumentMetadata: IArgumentMetadata) {
+    this.argumentMetadatas.push(argumentMetadata);
   }
 
   update() {
     Reflect.defineMetadata(
-      "services",
-      this.matadata,
+      this.metadataKey,
+      this.argumentMetadatas,
       this.command,
       this.methdodName
     );
   }
 }
 
-export function Service(identifier: any) {
+export function Service(identifier: New<{}> | string) {
   return (command: ICommand, methodName: "run", index: number) => {
-    const argumentServiceDecorator = new ArgumentServiceDecorator(
-      command,
-      methodName
+    const argumentServiceDecorator = new ArgumentDecorator(command, methodName);
+    // Ajouter un validateur par défaut pour mon service (voir a personaliser si il y a un intérêt)
+    argumentServiceDecorator.add(
+      new ArgumentMetadataService(identifier, index, [])
     );
-    argumentServiceDecorator.add(identifier, index);
 
     argumentServiceDecorator.update();
   };

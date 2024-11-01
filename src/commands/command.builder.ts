@@ -1,10 +1,11 @@
 import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
-import { ArgumentServiceDecorator } from "./arguments/argument.service.decorator";
-import { ArgumentServiceBuilder as ArgumentServiceBuilder } from "./arguments/argument.service.builder";
-import { ICommand } from "./command";
+import { ArgumentDecorator } from "./arguments/argument.service.decorator";
 import { Arguments } from "./arguments/arguments";
+import { ArgumentServiceBuilder } from "./arguments/argument.service.builder";
+import { ArgumentMetadataService } from "./arguments/argument.metadata.service";
+import { ArgumentBuilderFactory } from "./arguments/argument.builder.factory";
 
 export interface ISingleBuildCommand extends ICommandBuilder {
   mapSubCommand(command: NewCommand): ISingleBuildCommand;
@@ -51,13 +52,13 @@ export class CommandBuilder
         // Mon Argument aura un find("servives" | "options")
         const command = new this.newCommand();
 
-        // Aguem
-        const argumentServiceBuilder = new ArgumentServiceBuilder(
-          new ArgumentServiceDecorator(command, "run"),
-          argv.services!
+        const argumentDecorator = new ArgumentDecorator(command, "run");
+        const argumentBuilder = ArgumentBuilderFactory.createArgumentBuilder(
+          argv,
+          argumentDecorator.argumentMetadatas
         );
 
-        command.run.apply(command, argumentServiceBuilder.build());
+        command.run.apply(command, argumentBuilder.build());
       },
     });
   }

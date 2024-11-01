@@ -1,34 +1,31 @@
-import yargs from "yargs";
-import { IServiceCollection } from "../../services/service.collection";
-import { ArgumentServiceDecorator } from "./argument.service.decorator";
+import { ArgumentType, IArgumentBuilder } from "./argument.builder";
+import { ArgumentMetadataService } from "./argument.metadata.service";
+import { Arguments } from "./arguments";
 
-export class ArgumentServiceBuilder {
+export class ArgumentServiceBuilder implements IArgumentBuilder {
   constructor(
-    private readonly argument: ArgumentServiceDecorator,
-    private readonly services: IServiceCollection
+    private readonly argumentMetada: ArgumentMetadataService,
+    private readonly argv: Arguments
   ) {}
 
-  validate(argv: yargs.Arguments) {
-    // if (!this.services.isBound(identifier)) {
-    //   throw new Error(
-    //     `Le service ${identifier} n'est pas disponible dans le conteneur de dépendances.`
-    //   );
-    // }
+  build(): ArgumentType[] {
+    const array: ArgumentType[] = [];
+
+    array[this.argumentMetada.index] = this.argv.services!.get(
+      this.argumentMetada.data
+    );
+
+    return array;
   }
 
-  build() {
-    return Object.entries(this.argument.matadata).reduce(
-      (argsService, [index, identifier]) => {
-        if (!this.services.isBound(identifier)) {
-          throw new Error(
-            `Le service ${identifier} n'est pas disponible dans le conteneur de dépendances.`
-          );
-        }
+  validate(): boolean {
+    if (!this.argv.services!.isBound(this.argumentMetada.data)) {
+      throw new Error(
+        `Le service ${this.argumentMetada.data} n'est pas disponible dans le conteneur de dépendances.`
+      );
+    }
 
-        argsService[Number(index)] = this.services.get(identifier);
-        return argsService;
-      },
-      [] as any[]
-    );
+    // Retourner un tableau vide s
+    return true;
   }
 }
