@@ -43,7 +43,7 @@ export class ArgumentDecorator {
 export function Service(identifier: New<{}> | string) {
   return (command: ICommand, methodName: "run", index: number) => {
     const argumentServiceDecorator = new ArgumentDecorator(command, methodName);
-    // Ajouter un validateur par défaut pour mon service (voir a personaliser si il y a un intérêt)
+
     argumentServiceDecorator.add(
       new ArgumentMetadataService(identifier, index, [])
     );
@@ -51,3 +51,4 @@ export function Service(identifier: New<{}> | string) {
     argumentServiceDecorator.update();
   };
 }
+
