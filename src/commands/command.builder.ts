@@ -1,9 +1,8 @@
 import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
-import { ArgumentDecorator } from "./arguments/argument.service.decorator";
 import { Arguments } from "./arguments/arguments";
-import { ArgumentBuilderFactory } from "./arguments/argument.builder.factory";
+import { CommandHanderlBuilder } from "./command.handler.builder";
 
 export interface ISingleBuildCommand extends ICommandBuilder {
   mapSubCommand(command: NewCommand): ISingleBuildCommand;
@@ -20,7 +19,6 @@ export class CommandBuilder
   }
 
   mapSubCommand(command: NewCommand): ISingleBuildCommand {
-    // Créer un ArgumentsBuilder ???
     // Créer un CommandHandlerBuilder
     // Créer un InterceptorHandlerBuilder
     const commandBuilder = new CommandBuilder(command);
@@ -40,16 +38,15 @@ export class CommandBuilder
       },
       handler: (argv: Arguments) => {
         // CommandHandlerBuilder.... qui implementera un ICommandIndo (pour avoir accés dans les middlewares)
-        // pour les objets  utiliser class validator ^pour les validators
+        // pour les objets  utiliser class validator pour les validators objet json (Object)
+        // Le premier interceptor de chaque commande serra prédent pour valider les argument.
+        // Je dissocile la validation de la construction
+        // Tout ce code doit se trouver à l'extérieur.
         const command = new this.newCommand();
 
-        const argumentDecorator = new ArgumentDecorator(command, "run");
-        const argumentBuilder = ArgumentBuilderFactory.createArgumentBuilder(
-          argv,
-          argumentDecorator.argumentMetadatas
-        );
+        const commandHandlerBuilder = new CommandHanderlBuilder(command);
 
-        command.run.apply(command, argumentBuilder.build());
+        commandHandlerBuilder.build()(argv);
       },
     });
   }

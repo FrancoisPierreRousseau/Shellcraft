@@ -6,14 +6,13 @@ import { Arguments } from "./arguments";
 
 export class ArgumentBuilderFactory {
   public static createArgumentBuilder(
-    argv: Arguments,
     metadataArguments: IArgumentMetadata[]
   ): ArgumentBuilder {
     const argumentBuilder = new ArgumentBuilder();
 
     for (const metadataArgument of metadataArguments) {
       if (metadataArgument instanceof ArgumentMetadataService) {
-        argumentBuilder.add(new ArgumentServiceBuilder(metadataArgument, argv));
+        argumentBuilder.add(new ArgumentServiceBuilder(metadataArgument));
       }
     }
 

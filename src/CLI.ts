@@ -58,8 +58,8 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
   }
 
   register(...callbackCommandBuilders: CallbackCommandMapBuilder[]): ICli {
-    for (const callbackEndpointBuilder of callbackCommandBuilders) {
-      callbackEndpointBuilder(this);
+    for (const callbackCommandBuilder of callbackCommandBuilders) {
+      callbackCommandBuilder(this);
     }
     return this;
   }

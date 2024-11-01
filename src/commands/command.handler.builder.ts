@@ -1,16 +1,27 @@
 import { ICommand } from "./command";
-import { IServiceCollection } from "../services/service.collection";
 import { Arguments } from "./arguments/arguments";
+import { ArgumentBuilder } from "./arguments/argument.builder";
+import { ArgumentDecorator } from "./arguments/argument.service.decorator";
+import { ArgumentBuilderFactory } from "./arguments/argument.builder.factory";
 
 interface ICommandInfo {}
 
 export class CommandHanderlBuilder implements ICommandInfo {
-  constructor(private readonly command: ICommand) {}
+  private readonly argumentBuilder: ArgumentBuilder;
 
-  build(services: IServiceCollection, argv: Arguments) {
-    // argumentBuilder.build(argv)
+  constructor(private readonly command: ICommand) {
+    const argumentDecorator = new ArgumentDecorator(command, "run");
+    this.argumentBuilder = ArgumentBuilderFactory.createArgumentBuilder(
+      argumentDecorator.argumentMetadatas
+    );
+  }
+
+  // Passer en parem argv
+  // Création d'un objet qui retournera un type CommandContext avec les infos nécéssaire (services, argument)
+  // La création doit se passer dés le début. La validation des arguments également doit être dissocié
+  build() {
     return (argv: Arguments) => {
-      this.command.run();
+      this.command.run.apply(this.command, this.argumentBuilder.build(argv));
     };
   }
 }

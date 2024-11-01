@@ -1,27 +1,23 @@
 import { New } from "../../type";
+import { Arguments } from "./arguments";
 
 export type ArgumentType = InstanceType<New<{}>> | string | number;
 
 export interface IArgumentBuilder {
-  build(): ArgumentType[];
-  validate(): boolean;
+  build(argv: Arguments): ArgumentType[];
 }
 
 export class ArgumentBuilder implements IArgumentBuilder {
   private readonly argumentBuilders: IArgumentBuilder[] = [];
 
-  build(): ArgumentType[] {
+  build(argv: Arguments): ArgumentType[] {
     return this.argumentBuilders.reduce((argumentTypes, argumentBuilder) => {
-      argumentTypes.push(...argumentBuilder.build());
+      argumentTypes.push(...argumentBuilder.build(argv));
       return argumentTypes;
     }, [] as ArgumentType[]);
   }
 
   add(argumentBuilder: IArgumentBuilder) {
     this.argumentBuilders.push(argumentBuilder);
-  }
-
-  validate(): boolean {
-    throw new Error("Method not implemented.");
   }
 }
