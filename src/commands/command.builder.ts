@@ -13,14 +13,19 @@ export class CommandBuilder
   implements ISingleBuildCommand
 {
   private readonly subCommandBuilders: CommandBuilder[] = [];
+  private readonly commandHandlerBuilder: CommandHanderlBuilder;
 
   constructor(private readonly newCommand: NewCommand) {
     super();
+
+    // Créer un InterceptorHandlerBuilder ???
+    // pour les objets  utiliser class validator pour les validators objet json (Object)
+    // Le premier interceptor de chaque commande serra prédent pour valider les argument.
+    // Je dissocile la validation de la construction
+    this.commandHandlerBuilder = new CommandHanderlBuilder(new newCommand());
   }
 
   mapSubCommand(command: NewCommand): ISingleBuildCommand {
-    // Créer un CommandHandlerBuilder
-    // Créer un InterceptorHandlerBuilder
     const commandBuilder = new CommandBuilder(command);
     this.subCommandBuilders.push(commandBuilder);
     return commandBuilder;
@@ -36,18 +41,7 @@ export class CommandBuilder
         });
         return yargs.middleware(this.interceptors);
       },
-      handler: (argv: Arguments) => {
-        // CommandHandlerBuilder.... qui implementera un ICommandIndo (pour avoir accés dans les middlewares)
-        // pour les objets  utiliser class validator pour les validators objet json (Object)
-        // Le premier interceptor de chaque commande serra prédent pour valider les argument.
-        // Je dissocile la validation de la construction
-        // Tout ce code doit se trouver à l'extérieur.
-        const command = new this.newCommand();
-
-        const commandHandlerBuilder = new CommandHanderlBuilder(command);
-
-        commandHandlerBuilder.build()(argv);
-      },
+      handler: this.commandHandlerBuilder.build(),
     });
   }
 }

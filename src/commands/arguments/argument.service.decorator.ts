@@ -9,7 +9,6 @@ export type ArgumentMetadata = New<{}> | string | number;
 
 export interface IArgumentMetadata {
   data: ArgumentMetadata;
-  validators: ArgumentValidator[];
   index: number;
 }
 
@@ -45,10 +44,9 @@ export function Service(identifier: New<{}> | string) {
     const argumentServiceDecorator = new ArgumentDecorator(command, methodName);
 
     argumentServiceDecorator.add(
-      new ArgumentMetadataService(identifier, index, [])
+      new ArgumentMetadataService(identifier, index)
     );
 
     argumentServiceDecorator.update();
   };
 }
-

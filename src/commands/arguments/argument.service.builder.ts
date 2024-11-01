@@ -6,6 +6,12 @@ export class ArgumentServiceBuilder implements IArgumentBuilder {
   constructor(private readonly argumentMetada: ArgumentMetadataService) {}
 
   build(argv: Arguments): ArgumentType[] {
+    if (!argv.services!.isBound(this.argumentMetada.data)) {
+      throw new Error(
+        `Le service ${this.argumentMetada.data} n'est pas disponible dans le conteneur de dépendances.`
+      );
+    }
+
     const array: ArgumentType[] = [];
 
     array[this.argumentMetada.index] = argv.services!.get(
@@ -15,15 +21,3 @@ export class ArgumentServiceBuilder implements IArgumentBuilder {
     return array;
   }
 }
-
-/* 
-validate(): Error[] {
-    if (!this.argv.services!.isBound(this.argumentMetada.data)) {
-      throw new Error(
-        `Le service ${this.argumentMetada.data} n'est pas disponible dans le conteneur de dépendances.`
-      );
-    }
-
-    return [];
-  }
-*/
