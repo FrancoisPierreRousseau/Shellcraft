@@ -19,9 +19,6 @@ export class CommandBuilder
     super();
 
     // Créer un InterceptorHandlerBuilder ???
-    // pour les objets  utiliser class validator pour les validators objet json (Object)
-    // Le premier interceptor de chaque commande serra prédent pour valider les argument.
-    // Je dissocile la validation de la construction
     this.commandHandlerBuilder = new CommandHanderlBuilder(new newCommand());
   }
 

@@ -19,10 +19,9 @@ import { TestService } from "../services/test.service";
 export class Ping implements ICommand {
   private name: string = "Ping";
 
-  // Cela permet de regrouper les options passé par l'utilisateur dans des objets ayant une signification logique
-  // name "Hob" firstName: "Jack" pathConf: "C://programme/conf.json"
-  // @Options() config: Config { pathConf } , @Option() user: User { firstName, name }
-  // La validation se fera au build !
+  // @Options() config: Config { pathConf } , @Option() user: User { firstName, name } -> class transformer
+  // Pour chaque propriété des objet, j'utiliserais des validators que j'utiliserais dans le check.
+  // Cela est franchement cool car dans le check la majorité des types sont des strings
   run(@Service(TestService) service: TestService) {
     service.test();
   }
