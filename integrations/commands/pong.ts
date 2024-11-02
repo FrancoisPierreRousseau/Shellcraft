@@ -1,4 +1,4 @@
-import { Service } from "../../src/commands/arguments/argument.service.decorator";
+import { Service } from "../../src/commands/arguments/services/argument.service.decorator";
 import { ICommand } from "../../src/commands/command";
 import { TestService } from "../services/test.service";
 
@@ -19,9 +19,11 @@ import { TestService } from "../services/test.service";
 export class Ping implements ICommand {
   private name: string = "Ping";
 
-  // @Options() config: Config { pathConf } , @Option() user: User { firstName, name } -> class transformer
-  // Pour chaque propriété des objet, j'utiliserais des validators que j'utiliserais dans le check.
-  // Cela est franchement cool car dans le check la majorité des types sont des strings
+  // Utilisation d'un OptionBuilder pour générer les bon type
+  // qui serra utiliser par ArgumentOptionBuilder qui serra charger de valider et de construire en un ArgumentType
+
+  // @Options() config:Config { pathConf } , @Option() user:User { firstName, name }
+  // -> class validator + class transformer
   run(@Service(TestService) service: TestService) {
     service.test();
   }

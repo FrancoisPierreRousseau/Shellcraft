@@ -18,7 +18,6 @@ export class CommandBuilder
   constructor(private readonly newCommand: NewCommand) {
     super();
 
-    // Créer un InterceptorHandlerBuilder ???
     this.commandHandlerBuilder = new CommandHanderlBuilder(new newCommand());
   }
 

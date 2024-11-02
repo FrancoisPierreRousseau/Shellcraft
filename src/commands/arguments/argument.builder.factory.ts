@@ -1,19 +1,13 @@
-import { ArgumentBuilder } from "./argument.builder";
-import { IArgumentMetadata } from "./argument.service.decorator";
-import { ArgumentServiceBuilder } from "./argument.service.builder";
-import { ArgumentMetadataService } from "./argument.metadata.service";
-import { Arguments } from "./arguments";
+import { ArgumentBuilder, IArgumentBuilder } from "./argument.builder";
 
 export class ArgumentBuilderFactory {
   public static createArgumentBuilder(
-    metadataArguments: IArgumentMetadata[]
+    argumentBuilders: IArgumentBuilder[]
   ): ArgumentBuilder {
     const argumentBuilder = new ArgumentBuilder();
 
-    for (const metadataArgument of metadataArguments) {
-      if (metadataArgument instanceof ArgumentMetadataService) {
-        argumentBuilder.add(new ArgumentServiceBuilder(metadataArgument));
-      }
+    for (const arg of argumentBuilders) {
+      argumentBuilder.add(arg);
     }
 
     return argumentBuilder;
