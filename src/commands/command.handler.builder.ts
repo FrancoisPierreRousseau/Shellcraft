@@ -1,7 +1,7 @@
 import { ICommand } from "./command";
 import { Arguments } from "./arguments/arguments";
 import { ArgumentBuilder } from "./arguments/argument.builder";
-import { ArgumentDecorator } from "./arguments/services/argument.service.decorator";
+import { ArgumentDecorator } from "./arguments/argument.decorator";
 
 interface ICommandInfo {}
 

@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
 import { NewCommand } from "../type";
-import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
+import { BaseCommandBuilder } from "./base.command.builder";
 import { CommandBuilder, ISingleBuildCommand } from "./command.builder";
 import { ICommandMapBuilder } from "./command.map.builder";
 import { InterceptorHandler } from "./interceptors/interceptor.handler";

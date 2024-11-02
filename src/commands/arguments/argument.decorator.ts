@@ -1,8 +1,9 @@
 import yargs from "yargs";
-import { New } from "../../../type";
-import { ICommand } from "../../command";
-import { ArgumentBuilder, IArgumentBuilder } from "../argument.builder";
+import { New } from "../../type";
+import { ICommand } from "../command";
+import { ArgumentBuilder, IArgumentBuilder } from "./argument.builder";
 import { ArgumentServiceBuilder } from "./argument.service.builder";
+import { ArgumentOptionBuilder } from "./argument.option.builder";
 
 export type ArgumentValidator = (args: yargs.Argv) => Error | null;
 
@@ -35,12 +36,22 @@ export class ArgumentDecorator {
   }
 }
 
+export function Option(newOption: New<{}>) {
+  return (command: ICommand, methodName: "run", index: number) => {
+    const argumentDecorator = new ArgumentDecorator(command, methodName);
+
+    argumentDecorator.add(new ArgumentOptionBuilder(index, newOption));
+
+    argumentDecorator.update();
+  };
+}
+
 export function Service(identifier: New<{}> | string) {
   return (command: ICommand, methodName: "run", index: number) => {
-    const argumentServiceDecorator = new ArgumentDecorator(command, methodName);
+    const argumentDecorator = new ArgumentDecorator(command, methodName);
 
-    argumentServiceDecorator.add(new ArgumentServiceBuilder(index, identifier));
+    argumentDecorator.add(new ArgumentServiceBuilder(index, identifier));
 
-    argumentServiceDecorator.update();
+    argumentDecorator.update();
   };
 }

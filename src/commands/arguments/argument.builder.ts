@@ -1,7 +1,7 @@
 import { New } from "../../type";
 import { Arguments } from "./arguments";
 
-export type ArgumentType = InstanceType<New<{}>> | string | number;
+export type ArgumentType = InstanceType<New<{}>>;
 
 export interface IArgumentBuilder {
   build(argv: Arguments): ArgumentType[];

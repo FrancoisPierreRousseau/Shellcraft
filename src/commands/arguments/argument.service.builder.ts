@@ -1,6 +1,6 @@
-import { New } from "../../../type";
-import { ArgumentType, IArgumentBuilder } from "../argument.builder";
-import { Arguments } from "../arguments";
+import { New } from "../../type";
+import { ArgumentType, IArgumentBuilder } from "./argument.builder";
+import { Arguments } from "./arguments";
 
 export class ArgumentServiceBuilder implements IArgumentBuilder {
   constructor(

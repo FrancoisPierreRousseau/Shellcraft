@@ -1,7 +1,6 @@
 import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
-import { Arguments } from "./arguments/arguments";
 import { CommandHanderlBuilder } from "./command.handler.builder";
 
 export interface ISingleBuildCommand extends ICommandBuilder {

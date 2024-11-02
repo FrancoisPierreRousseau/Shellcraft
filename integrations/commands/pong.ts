@@ -1,4 +1,4 @@
-import { Service } from "../../src/commands/arguments/services/argument.service.decorator";
+import { Service } from "../../src/commands/arguments/argument.decorator";
 import { ICommand } from "../../src/commands/command";
 import { TestService } from "../services/test.service";
 
