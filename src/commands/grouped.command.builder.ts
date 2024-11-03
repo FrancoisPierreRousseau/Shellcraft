@@ -1,4 +1,4 @@
-import { Argv } from "yargs";
+import { Argv, CommandModule } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder } from "./base.command.builder";
 import { CommandBuilder, ISingleBuildCommand } from "./command.builder";
@@ -35,11 +35,11 @@ export class GroupedCommandBuilder
     return commandBuilder;
   }
 
-  build(yargsInstance: Argv<{}>): void {
-    this.commandBuilders.forEach((commandBuilder) => {
+  build(): CommandModule[] {
+    return this.commandBuilders.reduce((commandModule, commandBuilder) => {
       commandBuilder.interceptors.unshift(...this.interceptors);
-
-      commandBuilder.build(yargsInstance);
-    });
+      commandModule.push(...commandBuilder.build());
+      return commandModule;
+    }, [] as CommandModule[]);
   }
 }

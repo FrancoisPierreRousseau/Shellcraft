@@ -1,4 +1,7 @@
-import yargs from "yargs";
+import yargs, {
+  CommandModule,
+  CommandBuilder as CommandBuilderYargs,
+} from "yargs";
 import { hideBin } from "yargs/helpers";
 import "reflect-metadata";
 import {
@@ -73,9 +76,17 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
       argv.services = this.services;
     });
 
-    for (const commandBuilder of this.commandBuilders) {
-      commandBuilder.build(this.yargsInstance);
-    }
+    const commandModules = this.commandBuilders.reduce(
+      (commandModules, commandBuilder) => {
+        commandModules.push(...commandBuilder.build());
+        return commandModules;
+      },
+      [] as CommandModule[]
+    );
+
+    commandModules.forEach((commandModule) => {
+      this.yargsInstance.command(commandModule);
+    });
 
     this.yargsInstance.parseSync();
   }

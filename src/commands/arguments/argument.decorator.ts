@@ -3,17 +3,13 @@ import { ICommand } from "../command";
 import { ArgumentBuilder, IArgumentBuilder } from "./argument.builder";
 import { ArgumentServiceBuilder } from "./argument.service.builder";
 import { ArgumentOptionBuilder } from "./argument.option.builder";
-import {
-  ArgumentBuilderDescriptor,
-  IArgumentBuilderDescriptor,
-} from "./argument.builder.descriptor";
 import { ArgumentOptionDescriptorBuilder } from "./argument.option.descriptor.builder";
 
 // Plus tars, je ne construirais pas au fur et à mesure mais stockerais
 // les types pour le utiliser dans commandBuilder pour créer l'objet complet
 export class ArgumentDecorator {
   public readonly argumentBuilder: ArgumentBuilder;
-  public readonly argumentDescriptorBuilder: ArgumentBuilderDescriptor;
+  public readonly argumentOptionDescriptorBuilder: ArgumentOptionDescriptorBuilder[];
 
   private readonly metadataKeyBuilder = "argumentBuilder";
   private readonly metadataKeyDescriptorBuilder =
@@ -27,12 +23,12 @@ export class ArgumentDecorator {
       Reflect.getMetadata(this.metadataKeyBuilder, command, this.methdodName) ??
       new ArgumentBuilder();
 
-    this.argumentDescriptorBuilder =
+    this.argumentOptionDescriptorBuilder =
       Reflect.getMetadata(
         this.metadataKeyDescriptorBuilder,
         command,
         this.methdodName
-      ) ?? new ArgumentBuilderDescriptor();
+      ) ?? [];
   }
 
   addArgumentBuilder(argumentBuilder: IArgumentBuilder) {
@@ -40,9 +36,9 @@ export class ArgumentDecorator {
   }
 
   addArgumentBuilderDescripor(
-    argumentDescriptorBuilder: IArgumentBuilderDescriptor
+    argumentDescriptorBuilder: ArgumentOptionDescriptorBuilder
   ) {
-    this.argumentDescriptorBuilder.add(argumentDescriptorBuilder);
+    this.argumentOptionDescriptorBuilder.push(argumentDescriptorBuilder);
   }
 
   update() {
@@ -55,7 +51,7 @@ export class ArgumentDecorator {
 
     Reflect.defineMetadata(
       this.metadataKeyDescriptorBuilder,
-      this.argumentDescriptorBuilder,
+      this.argumentOptionDescriptorBuilder,
       this.command,
       this.methdodName
     );

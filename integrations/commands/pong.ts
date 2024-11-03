@@ -5,6 +5,7 @@ import {
 import { ICommand } from "../../src/commands/command";
 import { TestService } from "../services/test.service";
 import { Option1 } from "./options/option";
+import { Options2 as Option2 } from "./options/option2";
 
 // Peut on avoir plusieurs CLI(s) et les fusionner dans un cli principale ?
 // Le premier disposera du systéme d'authentification (par exemple auth0)
@@ -21,18 +22,13 @@ import { Option1 } from "./options/option";
 // peuvent être autogénérer sous forme de code. Les table schéma (modéle d'import) peuvent être stocké dans une bdd sqlite
 
 export class Ping implements ICommand {
-  private name: string = "Ping";
-
-  // Utilisation d'un OptionBuilder pour générer les bon type
-  // qui serra utiliser par ArgumentOptionBuilder qui serra charger de valider et de construire en un ArgumentType
-
-  // @Options() config:Config { pathConf } , @Option() user:User { firstName, name }
-  // -> class validator + class transformer
   run(
     @Service(TestService) service: TestService,
-    @Option(Option1) option: Option1
+    @Option(Option1) option: Option1,
+    @Option(Option2) option2: Option2
   ) {
     service.test();
-    console.log(option.name);
+    console.log(option);
+    console.log(option2);
   }
 }

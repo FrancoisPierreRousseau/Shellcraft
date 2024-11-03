@@ -1,4 +1,4 @@
-import yargs, { MiddlewareFunction } from "yargs";
+import yargs, { CommandModule, MiddlewareFunction } from "yargs";
 import { InterceptorHandler } from "./interceptors/interceptor.handler";
 
 export interface ICommandBuilder {
@@ -13,5 +13,5 @@ export abstract class BaseCommandBuilder implements ICommandBuilder {
     return this;
   }
 
-  abstract build(yargsInstance: yargs.Argv<{}>): void;
+  abstract build(): CommandModule[];
 }
