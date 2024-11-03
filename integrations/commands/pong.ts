@@ -30,5 +30,6 @@ export class Ping implements ICommand {
   // -> class validator + class transformer
   run(@Service(TestService) service: TestService, @ddd(Option) option: Option) {
     service.test();
+    console.log(option.name);
   }
 }

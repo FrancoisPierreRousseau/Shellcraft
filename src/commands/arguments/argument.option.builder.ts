@@ -6,6 +6,7 @@ import {
   IArgumentBuilder,
 } from "./argument.builder";
 import { Arguments } from "./arguments";
+import { validate } from "class-validator";
 
 export class ArgumentOptionBuilder implements IArgumentBuilder {
   constructor(
@@ -16,9 +17,31 @@ export class ArgumentOptionBuilder implements IArgumentBuilder {
   build(argv: Arguments): ArgumentItem[] {
     const array: ArgumentType[] = [];
 
-    const argument = plainToInstance(this.newOption, { name: "jaja" });
+    const obj = Object.getOwnPropertyNames(new this.newOption()).reduce(
+      (obj, propName) => {
+        obj = { ...obj, [propName]: argv[propName] };
+        return obj;
+      },
+      {}
+    );
 
-    array[this.index] = argument;
+    const option = plainToInstance(this.newOption, obj);
+
+    validate(option).then((errors) => {
+      if (errors.length > 0) {
+        throw new Error(
+          JSON.stringify(
+            errors.map(({ property, constraints, value }) => ({
+              property,
+              constraints,
+              value,
+            }))
+          )
+        );
+      }
+    });
+
+    array[this.index] = option;
 
     return array;
   }
