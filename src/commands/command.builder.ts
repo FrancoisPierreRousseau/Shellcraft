@@ -2,7 +2,6 @@ import { Argv } from "yargs";
 import { NewCommand } from "../type";
 import { BaseCommandBuilder, ICommandBuilder } from "./base.command.builder";
 import { CommandHanderlBuilder } from "./command.handler.builder";
-import { ArgumentBuilder } from "./arguments/argument.builder";
 
 export interface ISingleBuildCommand extends ICommandBuilder {
   mapSubCommand(command: NewCommand): ISingleBuildCommand;
@@ -38,14 +37,7 @@ export class CommandBuilder
       aliases: ["p"],
       deprecated: false,
       builder: (yargs) => {
-        yargs.option("option1", {
-          alias: ["o"],
-          describe: "Description de l'option 1",
-          type: "number",
-        });
-
-        //Patterne composite
-        // const optionDescriptor = argumentDescriptorBuilder.build(yargs)
+        this.commandHandlerBuilder.buildDescriptor(yargs);
 
         this.subCommandBuilders.forEach((subCommand) => {
           subCommand.build(yargs);

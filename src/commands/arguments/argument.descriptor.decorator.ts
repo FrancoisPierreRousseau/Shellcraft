@@ -1,13 +1,14 @@
 import { Options } from "yargs";
 
-interface ArgumentOptionDescriptor extends Options {}
+export interface ArgumentOptionDescriptor extends Options {}
 
 export class ArgumentDescriptorDecorator {
   private readonly metadataKey: string = "argumentDescriptor";
-  private readonly descriptors: Map<{}, ArgumentOptionDescriptor> = new Map();
+  private readonly descriptors: Map<{}, ArgumentOptionDescriptor>;
 
   constructor(private readonly option: {}, propName: string) {
-    this.descriptors = Reflect.getMetadata(this.metadataKey, option, propName);
+    this.descriptors =
+      Reflect.getMetadata(this.metadataKey, option, propName) ?? new Map();
   }
 
   get(): ArgumentOptionDescriptor {

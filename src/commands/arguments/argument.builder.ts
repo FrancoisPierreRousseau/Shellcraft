@@ -12,7 +12,11 @@ export class ArgumentBuilder implements IArgumentBuilder {
 
   build(argv: Arguments): ArgumentType[] {
     return this.argumentBuilders.reduce((argumentTypes, argumentBuilder) => {
-      argumentTypes.push(...argumentBuilder.build(argv));
+      argumentBuilder.build(argv).forEach((arg, index) => {
+        if (arg) {
+          argumentTypes[index] = arg;
+        }
+      });
       return argumentTypes;
     }, [] as ArgumentType[]);
   }

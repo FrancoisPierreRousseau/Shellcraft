@@ -7,7 +7,10 @@ import {
   ArgumentBuilderDescriptor,
   IArgumentBuilderDescriptor,
 } from "./argument.builder.descriptor";
+import { ArgumentOptionDescriptorBuilder } from "./argument.option.descriptor.builder";
 
+// Plus tars, je ne construirais pas au fur et à mesure mais stockerais
+// les types pour le utiliser dans commandBuilder pour créer l'objet complet
 export class ArgumentDecorator {
   public readonly argumentBuilder: ArgumentBuilder;
   public readonly argumentDescriptorBuilder: ArgumentBuilderDescriptor;
@@ -65,6 +68,10 @@ export function Option(newOption: New<{}>) {
 
     argumentDecorator.addArgumentBuilder(
       new ArgumentOptionBuilder(index, newOption)
+    );
+
+    argumentDecorator.addArgumentBuilderDescripor(
+      new ArgumentOptionDescriptorBuilder(new newOption())
     );
 
     argumentDecorator.update();

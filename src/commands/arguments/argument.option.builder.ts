@@ -16,9 +16,7 @@ export class ArgumentOptionBuilder implements IArgumentBuilder {
   build(argv: Arguments): ArgumentItem[] {
     const array: ArgumentType[] = [];
 
-    const argument = plainToInstance(this.newOption, {
-      excludeExtraneousValues: true,
-    });
+    const argument = plainToInstance(this.newOption, { name: "jaja" });
 
     array[this.index] = argument;
 

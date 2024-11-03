@@ -1,5 +1,7 @@
+import { Argv } from "yargs";
+
 export interface IArgumentBuilderDescriptor {
-  build(): void;
+  build(yargs: Argv<{}>): void;
 }
 
 export class ArgumentBuilderDescriptor implements IArgumentBuilderDescriptor {
@@ -10,7 +12,9 @@ export class ArgumentBuilderDescriptor implements IArgumentBuilderDescriptor {
     this.argumentBuilderDescriptors.push(argumentDescriptor);
   }
 
-  build(): void {
-    throw new Error("Method not implemented.");
+  build(yargs: Argv<{}>): void {
+    this.argumentBuilderDescriptors.forEach((argumentDescriptorBuilder) => {
+      argumentDescriptorBuilder.build(yargs);
+    });
   }
 }
