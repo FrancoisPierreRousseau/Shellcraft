@@ -1,6 +1,10 @@
-import { Service } from "../../src/commands/arguments/argument.decorator";
+import {
+  Option as ddd,
+  Service,
+} from "../../src/commands/arguments/argument.decorator";
 import { ICommand } from "../../src/commands/command";
 import { TestService } from "../services/test.service";
+import Option from "./options/option";
 
 // Peut on avoir plusieurs CLI(s) et les fusionner dans un cli principale ?
 // Le premier disposera du systéme d'authentification (par exemple auth0)
@@ -24,7 +28,7 @@ export class Ping implements ICommand {
 
   // @Options() config:Config { pathConf } , @Option() user:User { firstName, name }
   // -> class validator + class transformer
-  run(@Service(TestService) service: TestService) {
+  run(@Service(TestService) service: TestService, @ddd(Option) option: Option) {
     service.test();
   }
 }
