@@ -34,7 +34,6 @@ export interface ICli {
 }
 
 export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
-  private readonly yargsInstance = yargs(hideBin(process.argv));
   public readonly configures: CallbackConfigure[] = [];
   public readonly commandBuilders: BaseCommandBuilder[] = [];
 
@@ -68,11 +67,13 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
   }
 
   async run() {
+    const yargsInstance = yargs(hideBin(process.argv));
+
     for (const configure of this.configures) {
-      configure(this.yargsInstance);
+      configure(yargsInstance);
     }
 
-    this.yargsInstance.middleware((argv: Arguments) => {
+    yargsInstance.middleware((argv: Arguments) => {
       argv.services = this.services;
     });
 
@@ -85,9 +86,9 @@ export class CLI implements ICli, IConfiguration, ICommandMapBuilder {
     );
 
     commandModules.forEach((commandModule) => {
-      this.yargsInstance.command(commandModule);
+      yargsInstance.command(commandModule);
     });
 
-    this.yargsInstance.parseSync();
+    await yargsInstance.parseAsync();
   }
 }

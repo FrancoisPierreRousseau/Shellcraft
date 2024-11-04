@@ -1,7 +1,7 @@
-import { New } from "../../type";
+import { Constructor } from "../../type";
 import { Arguments } from "./arguments";
 
-export type ArgumentType = InstanceType<New<{}>>;
+export type ArgumentType = InstanceType<Constructor<{}>>;
 
 export interface IArgumentBuilder {
   build(argv: Arguments): ArgumentType[];

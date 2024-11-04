@@ -1,5 +1,5 @@
 import { plainToInstance } from "class-transformer";
-import { New } from "../../type";
+import { Constructor } from "../../type";
 import {
   ArgumentType as ArgumentItem,
   ArgumentType,
@@ -11,7 +11,7 @@ import { validate } from "class-validator";
 export class ArgumentOptionBuilder implements IArgumentBuilder {
   constructor(
     private readonly index: number,
-    private readonly newOption: New<{}>
+    private readonly newOption: Constructor<{}>
   ) {}
 
   build(argv: Arguments): ArgumentItem[] {

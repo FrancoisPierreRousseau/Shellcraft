@@ -4,23 +4,23 @@ export interface ArgumentOptionDescriptor extends Options {}
 
 export class ArgumentDescriptorDecorator {
   private readonly metadataKey: string = "argumentDescriptor";
-  private readonly descriptors: Map<{}, ArgumentOptionDescriptor>;
+  private readonly optionDescriptors: Map<{}, ArgumentOptionDescriptor>;
 
   constructor(private readonly option: {}, propName: string) {
-    this.descriptors =
+    this.optionDescriptors =
       Reflect.getMetadata(this.metadataKey, option, propName) ?? new Map();
   }
 
   get(): ArgumentOptionDescriptor {
-    return this.descriptors.get(this.option) ?? {};
+    return this.optionDescriptors.get(this.option) ?? {};
   }
 
   set(argumentOptionDescriptor: ArgumentOptionDescriptor) {
-    this.descriptors.set(this.option, argumentOptionDescriptor);
+    this.optionDescriptors.set(this.option, argumentOptionDescriptor);
   }
 
   update() {
-    Reflect.defineMetadata(this.metadataKey, this.descriptors, this.option);
+    Reflect.defineMetadata(this.metadataKey, this.optionDescriptors, this.option);
   }
 }
 

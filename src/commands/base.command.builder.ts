@@ -1,4 +1,4 @@
-import yargs, { CommandModule, MiddlewareFunction } from "yargs";
+import { CommandModule, MiddlewareFunction } from "yargs";
 import { InterceptorHandler } from "./interceptors/interceptor.handler";
 
 export interface ICommandBuilder {

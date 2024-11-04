@@ -1,4 +1,4 @@
-import { New } from "../../type";
+import { Constructor } from "../../type";
 import { ICommand } from "../command";
 import { ArgumentBuilder, IArgumentBuilder } from "./argument.builder";
 import { ArgumentServiceBuilder } from "./argument.service.builder";
@@ -58,7 +58,7 @@ export class ArgumentDecorator {
   }
 }
 
-export function Option(newOption: New<{}>) {
+export function Option(newOption: Constructor<{}>) {
   return (command: ICommand, methodName: "run", index: number) => {
     const argumentDecorator = new ArgumentDecorator(command, methodName);
 
@@ -74,7 +74,7 @@ export function Option(newOption: New<{}>) {
   };
 }
 
-export function Service(identifier: New<{}> | string) {
+export function Service(identifier: Constructor<{}> | string) {
   return (command: ICommand, methodName: "run", index: number) => {
     const argumentDecorator = new ArgumentDecorator(command, methodName);
 
