@@ -62,6 +62,13 @@ import { configureTest } from "./services/test.service";
 
 // Trouver un moyen pour que services des args ne soit pas considéré comme undefined
 
+/*
+  Normamlement Ping devrait reprednre les secondGrouped et threesGrouped ? Peutt être que oui, mais si c'est pas le cas
+  c'est parceque leur application devrait se faire à la toute fin. La commande est déja build des le map
+  donc cela arrête de fonctionner. 
+  node .\dist\integrations\cli.js Ping Jaja SubCommand --unBool --unString "Hello" --name ddd
+*/
+
 const cliBuilder = CliBuilder.createCliBuilder();
 
 cliBuilder.configure(configureTest);
