@@ -39,6 +39,10 @@ export class CommandBuilder
         yargs.option(propName, argumentOptionDescriptors.get(propName) ?? {});
       });
 
+      this.interceptors.forEach((middleware) => {
+        yargs.middleware(middleware);
+      });
+
       const commandModules = this.subCommandBuilders.reduce(
         (commandModules, commandBuilder) => {
           commandModules.push(...commandBuilder.build());
